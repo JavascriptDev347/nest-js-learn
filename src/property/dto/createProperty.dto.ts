@@ -6,11 +6,9 @@ export class createPropertyDto {
     name: string;
 
     @IsString()
-    @Length(2, 50, { groups: ['create'] })
-    @Length(1, 5, { groups: ['update'] })
     description: string;
 
     @IsInt()
     @IsPositive({ message: "Error positive" })
-    area: number;
+    price: number;
 }

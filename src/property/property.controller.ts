@@ -1,49 +1,50 @@
-import { Body, Controller, Get, HttpCode, Param, ParseBoolPipe, ParseIntPipe, Patch, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseBoolPipe, ParseFilePipe, ParseIntPipe, Patch, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { createPropertyDto } from './dto/createProperty.dto';
-import { IdParamDto } from './dto/idParam.dto';
 import { ParseIdPipe } from './pipes/parseIdpipe';
-import { ZodValidationPipe } from './pipes/zodValidationPipe';
-import { createPropertySchema, CreatePropertyZodDto } from './dto/createPropertyZod.dto';
+import { HeadersDto } from './dto/headers.dto';
+import { RequestHeader } from './pipes/request-header';
+import { PropertyService } from './property.service';
+import { UpdatePropertyDto } from './dto/updateProperty.dto';
+
+
 
 @Controller('property')
 export class PropertyController {
 
+
+    constructor(private propertyService: PropertyService) {
+        // this.propertyService = new PropertyService();
+    }
+
+
     @Get()
     findAll() {
-        return "All properties";
+        return this.propertyService.findAll();
     }
 
     @Get(':id/')
-    findOne(@Param("id", ParseIntPipe) id, @Query("sort", ParseBoolPipe) sort) {
-        return "Property by id: " + id;
+    findOne(@Param("id", ParseIntPipe) id) {
+        return this.propertyService.findOne(id);
     }
 
     @Post()
-    // @HttpCode(200)
-    // @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
-    // new ValidationPipe({
-    //     whitelist: true,
-    //     forbidNonWhitelisted: true,
-    //     groups: ["create"],
-    //     always: true
-    // })
-    @UsePipes(new ZodValidationPipe(createPropertySchema))
-    create(@Body() body:CreatePropertyZodDto ) {
-        return body;
+    create(@Body() body: createPropertyDto) {
+        return this.propertyService.create(body);
     }
 
+
     @Patch(":id")
-    // new ValidationPipe({
-    //         whitelist: true,
-    //         forbidNonWhitelisted: true,
-    //         groups: ["update"],
-    //         always: true
-    //     })
     update(
         @Param("id", ParseIdPipe) id,
         @Body()
-        body: createPropertyDto
+        body: UpdatePropertyDto,
+
     ) {
-        return body;
+        return this.propertyService.update(id, body);
+    }
+
+    @Delete(":id")
+    delete(@Param("id", ParseFilePipe) id) {
+        return this.propertyService.delete(id);
     }
 }
