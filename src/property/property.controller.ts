@@ -1,10 +1,9 @@
 import { Body, Controller, Delete, Get, Param, ParseBoolPipe, ParseFilePipe, ParseIntPipe, Patch, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { createPropertyDto } from './dto/createProperty.dto';
 import { ParseIdPipe } from './pipes/parseIdpipe';
-import { HeadersDto } from './dto/headers.dto';
-import { RequestHeader } from './pipes/request-header';
 import { PropertyService } from './property.service';
 import { UpdatePropertyDto } from './dto/updateProperty.dto';
+import { PaginationDTO } from './dto/pagination.dto';
 
 
 
@@ -18,8 +17,8 @@ export class PropertyController {
 
 
     @Get()
-    findAll() {
-        return this.propertyService.findAll();
+    findAll(@Query() paginationDto: PaginationDTO) {
+        return this.propertyService.findAll(paginationDto);
     }
 
     @Get(':id/')
